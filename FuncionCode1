@@ -1,0 +1,156 @@
+#include <stdio.h>
+#include <string.h>
+
+// Definición de constantes
+#define MaxProduc 100 // Máximo número de productos permitidos
+#define IVA 0.12      // Valor del IVA
+
+// Estructura que representa un producto en el inventario
+struct Producto {
+    char nombre[50];  // Nombre del producto
+    int codigo;       // Código único del producto
+    float precio;     // Precio del producto
+    int cantidad;     // Cantidad disponible en inventario
+};
+
+// Variable global para contar la cantidad de productos actuales en el inventario
+int productoacount;
+
+// Función para ingresar un nuevo producto al inventario
+void IngresarProducto() {
+    struct Producto productos[100]; // Array temporal para almacenar productos
+
+    productoacount++; // Incrementa el contador de productos
+
+    // Verifica si se ha alcanzado el límite máximo de productos
+    if (productoacount > MaxProduc) {
+        printf("Productos del Inventario completos");
+        return;
+    }
+
+    // Permite agregar un producto al inventario
+    for (size_t i = productoacount - 1; i < productoacount; i++) {
+        printf("Ingrese el nombre del producto: ");
+        fgets(productos[i].nombre, 50, stdin);
+
+        printf("Ingrese la cantidad del producto: ");
+        scanf("%d", &productos[i].cantidad);
+        getchar(); // Limpiar el buffer del teclado
+
+        printf("Ingrese el codigo del producto: ");
+        scanf("%d", &productos[i].codigo);
+        getchar();
+
+        printf("Ingrese el precio del producto: ");
+        scanf("%f", &productos[i].precio);
+        getchar();
+    }
+}
+
+// Función para editar un producto en el inventario
+void editarProdu() {
+    int cambio; // Opción de modificación
+    struct Producto productos[100]; // Array temporal de productos
+
+    printf("Ingrese el producto que desea editar: ");
+    fgets(productos[100].nombre, 50, stdin);
+
+    // Busca el producto por nombre en el inventario
+    for (size_t i = 0; i < productoacount; i++) {
+        if (strcmp(productos[100].nombre, productos[i].nombre) == 0) {
+            printf("¿Que desea cambiar del producto?\n");
+            printf("1. Nombre\n2. Cantidad\n3. Precio\n4. Codigo\n");
+            scanf("%d", &cambio);
+            getchar();
+
+            // Modifica la propiedad seleccionada del producto
+            switch (cambio) {
+                case 1:
+                    printf("Nombre del producto actual: %s", productos[i].nombre);
+                    printf("Nuevo nombre: ");
+                    fgets(productos[i].nombre, 50, stdin);
+                    break;
+
+                case 2:
+                    printf("Cantidad actual del producto: %d\n", productos[i].cantidad);
+                    printf("Nueva cantidad: ");
+                    scanf("%d", &productos[i].cantidad);
+                    getchar();
+                    break;
+
+                case 3:
+                    printf("Precio actual del producto: %.2f\n", productos[i].precio);
+                    printf("Nuevo precio: ");
+                    scanf("%f", &productos[i].precio);
+                    getchar();
+                    break;
+
+                case 4:
+                    printf("Código actual del producto: %d\n", productos[i].codigo);
+                    printf("Nuevo código: ");
+                    scanf("%d", &productos[i].codigo);
+                    break;
+
+                default:
+                    printf("Opción no válida.\n");
+                    break;
+            }
+
+            printf("Producto actualizado.\n");
+            return;
+        }
+    }
+
+    printf("Producto no encontrado.\n");
+}
+
+// Función para eliminar un producto del inventario
+void EliminarProducto() {
+    struct Producto productos[100]; // Array temporal de productos
+    char busqueda[100];             // Nombre del producto a buscar
+    int encontrado = 0;             // Bandera para verificar si el producto fue encontrado
+
+    printf("Ingrese el nombre del producto a eliminar: ");
+    fgets(busqueda, sizeof(busqueda), stdin);
+
+    // Eliminar el salto de línea al final del nombre ingresado
+    size_t len = strlen(busqueda);
+    if (len > 0 && busqueda[len - 1] == '\n') {
+        busqueda[len - 1] = '\0';
+    }
+
+    // Buscar el producto por nombre y eliminarlo
+    for (size_t i = 0; i < productoacount; i++) {
+        if (strcmp(productos[i].nombre, busqueda) == 0) {
+            encontrado = 1;
+
+            // Desplazar elementos para llenar el hueco
+            for (size_t j = i; j < productoacount - 1; j++) {
+                productos[j] = productos[j + 1];
+            }
+
+            productoacount--; // Reducir el conteo de productos
+            printf("Producto eliminado.\n");
+            break;
+        }
+    }
+
+    if (!encontrado) {
+        printf("Producto no encontrado.\n");
+    }
+}
+
+// Función para listar todos los productos en el inventario
+void listaProductos() {
+    struct Producto productos[100]; // Array temporal de productos
+
+    printf("  Nombre del producto  |  Cantidad  |  Codigo  |  Precio\n");
+
+    // Itera por todos los productos y los muestra
+    for (size_t i = 0; i < productoacount; i++) {
+        printf("  %s  ", productos[i].nombre);
+        printf("  %d  ", productos[i].cantidad);
+        printf("  %d  ", productos[i].codigo);
+        printf("  %.2f  \n", productos[i].precio);
+    }
+}
